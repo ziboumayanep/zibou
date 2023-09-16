@@ -13,3 +13,9 @@ flask = "^2.3.3"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.pyright]
+include = ["backend"]
+exclude = ['.venv']
+venv = ".venv"
+venvPath = "."
