@@ -13,7 +13,7 @@ pygmentsCodefencesGuessSyntax = true
 
 [Params]
   homeTitle = "Hoai Nam NGUYEN" # Set a different text for the header on the home page
-  subtitle = "Technical blogs"
+  subtitle = "Technical blog"
   mainSections = ["post","posts"]
   logo = "img/avatar-icon.png" # Expecting square dimensions
   favicon = "img/favicon.ico"
