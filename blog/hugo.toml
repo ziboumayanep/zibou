@@ -1,4 +1,4 @@
-baseurl = "https://username.github.io"
+baseurl = "http://zibou.ovh"
 DefaultContentLanguage = "en"
 title = "Hoai Nam NGUYEN"
 theme = "beautifulhugo"
@@ -65,5 +65,5 @@ pygmentsCodefencesGuessSyntax = true
 
 [[menu.main]]
     name = "Tags"
-    url = "tags"
+    url = "tags"    
     weight = 3
