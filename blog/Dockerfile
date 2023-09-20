@@ -10,7 +10,7 @@ WORKDIR /blog
 COPY . .
 
 # Run Hugo in the Workdir to generate HTML.
-RUN hugo --environment production 
+RUN hugo 
 
 # Stage 2
 FROM nginx:1.25-alpine
