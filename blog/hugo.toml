@@ -1,4 +1,4 @@
-baseurl = "http://zibou.ovh"
+baseurl = "https://zibou.ovh"
 DefaultContentLanguage = "en"
 title = "Hoai Nam NGUYEN"
 theme = "beautifulhugo"
