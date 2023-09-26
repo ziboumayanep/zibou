@@ -3,11 +3,8 @@ steps:
     dir: blog
 
   - name: gcr.io/cloud-builders/docker
-    args: [build, '--tag=gcr.io/${PROJECT_ID}/blog', .]
+    args: [build, '--tag=europe-west9-docker.pkg.dev/${PROJECT_ID}/zibou/blog:latest', .]
     dir: blog
 
-images: ['gcr.io/${PROJECT_ID}/blog']
-
-
-
+images: ['europe-west9-docker.pkg.dev/${PROJECT_ID}/zibou/blog:latest']
 
