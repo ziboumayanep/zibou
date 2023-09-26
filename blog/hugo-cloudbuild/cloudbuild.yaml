@@ -1,6 +1,6 @@
 steps:
   - name: gcr.io/cloud-builders/docker
-    args: [build, '--tag=gcr.io/${PROJECT_ID}/hugo', .]
+    args: [build, '--tag=europe-west9-docker.pkg.dev/${PROJECT_ID}/zibou/hugo:${SHORT_SHA}', .]
     dir: blog/hugo-cloudbuild
 
-images: ['gcr.io/${PROJECT_ID}/hugo']
+images: ['europe-west9-docker.pkg.dev/${PROJECT_ID}/zibou/hugo:${SHORT_SHA}']

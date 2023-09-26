@@ -1,10 +1,9 @@
 steps:
-  - name: gcr.io/${PROJECT_ID}/hugo
+  - name: europe-west9-docker.pkg.dev/${PROJECT_ID}/zibou/hugo:31107fd
     dir: blog
 
   - name: gcr.io/cloud-builders/docker
-    args: [build, '--tag=europe-west9-docker.pkg.dev/${PROJECT_ID}/zibou/blog:latest', .]
+    args: [build, '--tag=europe-west9-docker.pkg.dev/${PROJECT_ID}/zibou/blog:${SHORT_SHA}', .]
     dir: blog
 
-images: ['europe-west9-docker.pkg.dev/${PROJECT_ID}/zibou/blog:latest']
-
+images: ['europe-west9-docker.pkg.dev/${PROJECT_ID}/zibou/blog:${SHORT_SHA}']
