@@ -1,12 +1,12 @@
 apiVersion: networking.gke.io/v1beta1
 kind: FrontendConfig
 metadata:
-    name: zibou-frontend-config
+  name: zibou-frontend-config
 spec:
-    redirectToHttps:
-          enabled: true
-          responseCodeName: MOVED_PERMANENTLY_DEFAULT
----                     
+  redirectToHttps:
+    enabled: true
+    responseCodeName: MOVED_PERMANENTLY_DEFAULT
+---
 apiVersion: networking.gke.io/v1
 kind: ManagedCertificate
 metadata:
@@ -43,7 +43,7 @@ metadata:
 spec:
   type: NodePort
   ports:
-    - port: 80 
+    - port: 80
       protocol: TCP
       targetPort: 80
   selector:
@@ -57,17 +57,16 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: blog 
+      app: blog
   replicas: 1 # tells deployment to run 1 pods matching the template
   template:
     metadata:
       labels:
-        app: blog 
+        app: blog
     spec:
       containers:
-      - name: blog 
-        image: namnguyen107/blog:v2
-        imagePullPolicy: Always
-        ports:
-        - containerPort: 80
-
+        - name: blog
+          image: europe-west9-docker.pkg.dev/zibou-399608/zibou/blog # the tag value will be updated by kustomize
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
