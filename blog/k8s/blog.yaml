@@ -66,7 +66,7 @@ spec:
     spec:
       containers:
         - name: blog
-          image: europe-west9-docker.pkg.dev/zibou-399608/zibou/blog # the tag value will be updated by kustomize
+          image: <HUGO_BLOG_IMAGE> # the real value will be replaced in cloudbuild step
           imagePullPolicy: Always
           ports:
             - containerPort: 80

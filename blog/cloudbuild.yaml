@@ -11,4 +11,32 @@ steps:
       ]
     dir: blog
 
-images: ["europe-west9-docker.pkg.dev/${PROJECT_ID}/zibou/blog:${SHORT_SHA}"]
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "push",
+        "europe-west9-docker.pkg.dev/${PROJECT_ID}/zibou/blog:${SHORT_SHA}",
+      ]
+    allowFailure: true
+
+  - name: "bash"
+    dir: blog/k8s
+    script: |
+      #!/usr/bin/env bash
+      sed -i 's/<HUGO_BLOG_IMAGE>/europe-west9-docker.pkg.dev\/'${PROJECT_ID}'\/zibou\/blog:'${SHORT_SHA}'/g' blog.yaml
+      cat blog.yaml
+    env:
+      - "PROJECT_ID=$PROJECT_ID"
+      - "SHORT_SHA=$SHORT_SHA"
+
+  # deploy GKE.
+  - name: "gcr.io/cloud-builders/gke-deploy"
+    dir: blog/k8s
+    args:
+      - run
+      - --filename=.
+      - --location=europe-west9
+      - --cluster=zibou-cluster
+    timeout: 600s
+options:
+  automapSubstitutions: true

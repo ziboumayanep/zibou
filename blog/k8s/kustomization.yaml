@@ -1,5 +1,0 @@
-resources:
-  - blog.yaml
-images:
-  - name: europe-west9-docker.pkg.dev/zibou-399608/zibou/blog
-    newTag: a0850ed #<HUGO_TAG> # Must be replaced by sed tool in CloudBuild a0850ed
