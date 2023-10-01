@@ -14,3 +14,7 @@ resource "google_service_account" "service_account" {
   account_id   = "cloudbuild"
   display_name = "Service Account"
 }
+
+resource "google_compute_global_address" "zibou" {
+  name = "zibou-ip2"
+}
