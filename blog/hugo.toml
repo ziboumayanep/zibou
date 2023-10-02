@@ -1,7 +1,7 @@
 baseurl = "https://zibou.ovh"
 DefaultContentLanguage = "en"
 title = "Hoai Nam NGUYEN"
-theme = "beautifulhugo"
+theme = "PaperMod"
 pygmentsStyle = "trac"
 pygmentsUseClasses = true
 pygmentsCodeFences = true
@@ -12,21 +12,22 @@ pygmentsCodefencesGuessSyntax = true
 #googleAnalytics = "XXX"
 
 [Params]
-  homeTitle = "Hoai Nam NGUYEN" # Set a different text for the header on the home page
-  subtitle = "Technical blog"
-  mainSections = ["post","posts"]
-  logo = "img/avatar-icon.png" # Expecting square dimensions
-  favicon = "img/favicon.ico"
-  dateFormat = "January 2, 2006"
-  commit = false
-  rss = true
-  comments = true
-  readingTime = true
-  wordCount = true
-  useHLJS = true
-  socialShare = true
-  delayDisqus = true
-  showRelatedPosts = true
+homeTitle = "Hoai Nam NGUYEN"    # Set a different text for the header on the home page
+subtitle = "Technical blog"
+mainSections = ["post", "posts"]
+logo = "img/avatar-icon.png"     # Expecting square dimensions
+favicon = "img/favicon.ico"
+dateFormat = "January 2, 2006"
+commit = false
+rss = true
+comments = true
+readingTime = true
+wordCount = true
+useHLJS = true
+socialShare = true
+delayDisqus = true
+showRelatedPosts = true
+ShowToc = true
 #  hideAuthor = true
 #  gcse = "012345678901234567890:abcdefghijk" # Get your code from google.com/cse. Make sure to go to "Look and Feel" and change Layout to "Full Width" and Theme to "Classic"
 #  disclaimerText = "The opinions expressed herein are my own personal opinions and do not represent my employer’s view in any way."
@@ -44,26 +45,26 @@ pygmentsCodefencesGuessSyntax = true
 #  desc = "Hexagon"
 
 [Author]
-  # Set only your "username" for default hosts and full URLs otherwise (e.g., "https://MyGitLab.org/username")
-  name = "Hoai Nam NGUYEN"
-  website = "https://zibou.ovh"
-  email = "hoainam.nguyen@gmail.com"
-  github = "ziboumayanep"
-  linkedin = "https://www.linkedin.com/in/hoai-nam-nguyen/"
-  stackoverflow = "https://stackoverflow.com/users/631914/nam"
+# Set only your "username" for default hosts and full URLs otherwise (e.g., "https://MyGitLab.org/username")
+name = "Hoai Nam NGUYEN"
+website = "https://zibou.ovh"
+email = "hoainam.nguyen@gmail.com"
+github = "ziboumayanep"
+linkedin = "https://www.linkedin.com/in/hoai-nam-nguyen/"
+stackoverflow = "https://stackoverflow.com/users/631914/nam"
 
 [[menu.main]]
-    name = "Blog"
-    url = ""
-    weight = 1
+name = "Blog"
+url = ""
+weight = 1
 
 [[menu.main]]
-    name = "About"
-    url = "page/about/"
-    weight = 3
+name = "About"
+url = "page/about/"
+weight = 3
 
 
 [[menu.main]]
-    name = "Tags"
-    url = "tags"    
-    weight = 3
+name = "Tags"
+url = "tags"
+weight = 3

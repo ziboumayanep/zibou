@@ -2,15 +2,16 @@
 title: "Designing a  Migration Tool"
 date: 2018-10-22
 tgs:
-    - scala
-    - json
+  - scala
+  - json
 ---
+
 Json is probably the most popular data format today. It's used both for data exchange (between front-end and backend for example). It's also used to store inside database like `MongoDB`, even [`postgresql`](https://www.postgresql.org/docs/9.3/static/functions-json.html) supports json data type.
 
 Working with `json` means defining 2 functions:
 
-* A Writer that converts an object into `json` format
-* A Reader that reads a `json` and produces an object
+- A Writer that converts an object into `json` format
+- A Reader that reads a `json` and produces an object
 
 An example of this use case is:
 
@@ -44,7 +45,7 @@ But what about the old json format? The current format cannot read the old json 
 
 Now we should find a solution in order to be able to read the old json format by setting the `z` to a default value
 
-# First solution
+## First solution
 
 We've found a quick solution to the problem. We can for example define a `Reader` that can read both current and old version.
 
@@ -84,22 +85,22 @@ The system works like that: the implicit readers is always in the last version. 
 
 But the problems of this design are:
 
-* If we add or remove a field, we need to update all the readers
-* Do not work in more complicated cases: move a field to a nother place, rename a field, change value of a field
-* Splitting `Format` to `Reader` and `Writer` can cause a Reader/Writer mismatch. We need to add a lot of tests 
+- If we add or remove a field, we need to update all the readers
+- Do not work in more complicated cases: move a field to a nother place, rename a field, change value of a field
+- Splitting `Format` to `Reader` and `Writer` can cause a Reader/Writer mismatch. We need to add a lot of tests
 
-# Second solution
+## Second solution
 
-## Imperative vs Functional
+### Imperative vs Functional
 
 The solution is to clone the SQL migration design: Each migration is defined by a script.
 
-The question is how we define this migration script. The `JsValue` is immutable and creating new value from the old one is tedious. I am a fan of functional programming but this is where the imperative way is much more easy. For example 
+The question is how we define this migration script. The `JsValue` is immutable and creating new value from the old one is tedious. I am a fan of functional programming but this is where the imperative way is much more easy. For example
 
-Imperative way | Functional way
----|---
-`x.y.z += 1`   |`x.copy(y = x.y.copy(z = x.y.z + 1))`
-`value[“key25”] = {“key251”: value[“key2”][“key21”]}` | `(__ \ 'key25 \ 'key251).json.copyFrom( (__ \ 'key2 \ 'key21).json.pick )`
+| Imperative way                                        | Functional way                                                             |
+| ----------------------------------------------------- | -------------------------------------------------------------------------- |
+| `x.y.z += 1`                                          | `x.copy(y = x.y.copy(z = x.y.z + 1))`                                      |
+| `value[“key25”] = {“key251”: value[“key2”][“key21”]}` | `(__ \ 'key25 \ 'key251).json.copyFrom( (__ \ 'key2 \ 'key21).json.pick )` |
 
 I write the library for a team of both functional and less functional programer in the team. It should be easy to write migration script and the functional way is very hard for this task. Moreover, for the advanced task it's near impossible to do. For example, let's say we want to modify all the `JsObject` that has the field `toto` and change the field value to 0. An example of this json value is:
 
@@ -112,11 +113,11 @@ I write the library for a team of both functional and less functional programer 
 
 ```
 
-The value that we want to modify can be inside a field, nested in 2 levels fields or even inside an array. Updating these values in a functional way is hard and the only way I've found is using advanced concept like [the zipper](https://en.wikipedia.org/wiki/Zipper_(data_structure))
+The value that we want to modify can be inside a field, nested in 2 levels fields or even inside an array. Updating these values in a functional way is hard and the only way I've found is using advanced concept like [the zipper](<https://en.wikipedia.org/wiki/Zipper_(data_structure)>)
 
 All the difficulties lead to the obvious solution: convert temporary immutable value into mutable version, applying changes and convert back to the original value
 
-## Wrapper for mutable version
+### Wrapper for mutable version
 
 Let's define a `trait` for this new data struture:
 
@@ -132,7 +133,7 @@ case object JsNUllWrapper extends JsValueWrapper
 
 This build an equivalent of all the possbile values of `JsValue`. The only difference is the `JsObjectWrapper` and `JsArrayWrapper` use mutable collection internally
 
-## Conversion functions
+### Conversion functions
 
 Let's define 2 methods to convert between `JsValue` and `JsValueWrapper`. Of course there are some recursivities when dealing with `JsObject` and `JsArray`
 
@@ -162,7 +163,7 @@ input match {
 
 ```
 
-## Script
+### Script
 
 Let's define a `trait` that defines a method `migrate` that make in place modification
 
@@ -191,7 +192,7 @@ implicit val monoid: Monoid[JsonMigrator] = new Monoid[JsonMigrator] {
 
 ```
 
-## Some helpers
+### Some helpers
 
 We should create some conversion implicit to help our users write more concise migration code. But it's not a safe operation because the `asInstanceOf` can throw exceptions
 
@@ -210,7 +211,7 @@ implicit class JsObjectWrapperConverter(input: JsValueWrapper) {
 
 ```
 
-## Examples
+### Examples
 
 Let's say we have 3 migrations:
 
@@ -250,7 +251,7 @@ allMigrator.migrate(x) // then mutate it by applying the global migration
 val result = JsValueWrapper.toJson(x)
 ```
 
-## Integration into deployment system
+### Integration into deployment system
 
 This is just an example how we can automatically migrate a database with a lot of json: The database store the current version somewhere. When executing a migration, the proram fetches the current version and find all the migration scripts, combine them to make a global script, iterate all the json value in database, convert to mutable version, transform it with the global script and finally convert it back to the immutable version
 
@@ -266,7 +267,6 @@ val l = List(
 
 If 2 users modify the file at the same time, they have to resolve conflict during the merge
 
-# Conclusion
+## Conclusion
 
 The library is successful because my team uses it every day. There is some very complex script that may take more than 100 lines of code. One of the big avantage is that we can use the `Format` type class instead of `Reader/Writer` thus there is no mismatch problem between the reader and the writer
-

@@ -1,7 +1,7 @@
 ---
 title: "Json Migration Tool"
 date: 2018-10-22
-tags: ['scala', 'json']
+tags: ["scala", "json"]
 ---
 
 This [project](http://hibou107.github.io/developing-a-json-migration-tool.html) tries to help building a json migration framework in the same way of a database migration tool.
@@ -16,7 +16,7 @@ in realty, then an `Exception` is throw. Remember, exception can be throwed anyw
 
 In a real world project, the users should backup their databases before applying any migrations
 
-For the moment, I did not make it available to import from `sbt`. If you want to integrate into your project, just copy 
+For the moment, I did not make it available to import from `sbt`. If you want to integrate into your project, just copy
 the files and add the dependencies.
 
 ```sbt
@@ -26,28 +26,28 @@ libraryDependencies += "com.typesafe.play" %% "play-json" % "2.6.7"
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.4" % "test"
 ```
 
-# How to use
+## How to use
 
 Suppose we want have a json value:
 
 ```json
-
-    {"field1" : {
-         "field11": 100
-        },
-        "field2": [
-         {
-           "sField": "Do it"
-         },
-         {
-           "sField": "good",
-           "s1": "fine"
-         }
-        ],
-        "field3": {
-         "sField": "nice"
-        }
-      }
+{
+  "field1": {
+    "field11": 100
+  },
+  "field2": [
+    {
+      "sField": "Do it"
+    },
+    {
+      "sField": "good",
+      "s1": "fine"
+    }
+  ],
+  "field3": {
+    "sField": "nice"
+  }
+}
 ```
 
 We want to apply a list of transformations to this json value:
@@ -60,25 +60,25 @@ The result we want to see is:
 
 ```json
 {
-  "field1" : {
-   "field12": "myNewField"
+  "field1": {
+    "field12": "myNewField"
   },
   "field2": [
-   {
-     "sField": "hahaha"
-   },
-   {
-     "sField": "hahaha",
-     "s1": "fine"
-   }
+    {
+      "sField": "hahaha"
+    },
+    {
+      "sField": "hahaha",
+      "s1": "fine"
+    }
   ],
   "field3": {
-   "sField": "hahaha"
+    "sField": "hahaha"
   }
 }
 ```
 
-## Create a list of migrators
+### Create a list of migrators
 
 The library provides a nice way to describe easily:
 
@@ -87,7 +87,7 @@ Extends the trait `JsValueWrapperImplicits` to have automatic conversion between
 Create a new `JsonMigrator` that defines a function `migrate`. This function takes a `JsValueWrapper` which is
 a mutable value
 
-### first migration
+#### first migration
 
 ```scala
 private val migrator1 = new JsonMigrator() {
@@ -98,10 +98,10 @@ private val migrator1 = new JsonMigrator() {
   }
 ```
 
-* `x("field1")` means I know x is a JsObject and I access the field `field1`
-* `y.map.remove("field11")` means I know y is a JsObject and I remove the field `field11`
+- `x("field1")` means I know x is a JsObject and I access the field `field1`
+- `y.map.remove("field11")` means I know y is a JsObject and I remove the field `field11`
 
-### second migration
+#### second migration
 
 ```scala
   // add new field field1/field12
@@ -111,7 +111,7 @@ def migrate(input: JsValueWrapper): Unit =
 }
 ```
 
-### third migration
+#### third migration
 
 ```scala
 //  Change all sFields to "hahaha"
@@ -125,7 +125,7 @@ def migrate(input: JsValueWrapper): Unit =
 
 This migration is a little more tricky. Inside the function `migrate` we use a helper `PathResolver.migrate` that
 takes the first input as `JsValueWrapper` and a list of `FieldCond`. `RecurFieldCond(HasField("sField"))` means find all
-the `Jsvalue` that is an `JsObject` and has the field `sField`. The second argument is a function that makes the 
+the `Jsvalue` that is an `JsObject` and has the field `sField`. The second argument is a function that makes the
 change in that value. Note that the `w` object is the found object and not the the value of the field `sField`
 
 Once we have the list of migrators, we can combine these to make a global json migrator
@@ -138,7 +138,7 @@ val globalMigrator = List(migrator1, migrator2, migrator3).suml
 
 Note that you need to import `scalaz` syntax in order to use the `suml` utilities
 
-## Migration
+### Migration
 
 Now when the global `migrator` is created, the only thing to do is to migrate the original json:
 
@@ -148,7 +148,7 @@ allMigrator.migrate(x) // then mutate it by applying the global migration
 JsValueWrapper.toJson(x) shouldBe jsonResult // the result must be identical to the desired result
 ```
 
-## Compare it to JsonTransformer
+### Compare it to JsonTransformer
 
 I will compare the `JsonTransformer` in the [tutorial([https://www.playframework.com/documentation/2.6.x/ScalaJsonTransformers) with this mutable version
 
@@ -218,7 +218,7 @@ val migrator = new JsonMigrator {
     val description = input.map("description").map
     description.update("features", JsArrayWrapper("skinny", "ugly", "evil"))
     val currentSize = description("size").number
-    description.update("size", currentSize * 3) 
+    description.update("size", currentSize * 3)
     description.update("danger", "always")
     input.map.remove("danger")
     input.map.update("hates", "all")
@@ -229,10 +229,10 @@ val migrator = new JsonMigrator {
 
 I feel this approach is easier than the purely functional style.
 
-The tutorial from Play's website does not include any recursive transformations. Correct me if I'm wrong, but I think it's impossible to do it 
+The tutorial from Play's website does not include any recursive transformations. Correct me if I'm wrong, but I think it's impossible to do it
 without using a [zipper datastructure](https://en.wikipedia.org/wiki/Zipper)
 
-# Going further
+## Going further
 
 This code is extracted in a real world project. If you want to integrate the migration into your workflow, you have to do more things:
 
@@ -253,5 +253,3 @@ the global transformation from the start version to the lastest version.
 That's it
 
 If you've found it useful, please let me know
-
-
