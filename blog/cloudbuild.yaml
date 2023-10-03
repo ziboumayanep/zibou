@@ -40,3 +40,4 @@ steps:
     timeout: 600s
 options:
   automapSubstitutions: true
+  defaultLogsBucketBehavior: REGIONAL_USER_OWNED_BUCKET
