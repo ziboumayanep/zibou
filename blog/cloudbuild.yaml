@@ -35,7 +35,7 @@ steps:
     args:
       - run
       - --filename=.
-      - --location=europe-west9
+      - --location=${LOCATION}
       - --cluster=zibou-cluster2
     timeout: 600s
 options:
