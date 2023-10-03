@@ -26,9 +26,10 @@ resource "google_cloudbuild_trigger" "hugo-build-image" {
       branch = "main"
     }
   }
-  filename       = "blog/hugo-cloudbuild/cloudbuild.yaml"
-  included_files = ["blog/hugo-cloudbuild/**"]
-
+  filename        = "blog/hugo-cloudbuild/cloudbuild.yaml"
+  included_files  = ["blog/hugo-cloudbuild/**"]
+  service_account = google_service_account.service_account.id
+  logging         = "CLOUD_LOGGING_ONLY"
 }
 
 resource "google_cloudbuild_trigger" "blog" {
@@ -44,4 +45,6 @@ resource "google_cloudbuild_trigger" "blog" {
   filename       = "blog/cloudbuild.yaml"
   included_files = ["blog/**"]
 
+  service_account = google_service_account.service_account.id
+  logging         = "CLOUD_LOGGING_ONLY"
 }
