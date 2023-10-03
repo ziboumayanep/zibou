@@ -2,12 +2,12 @@ baseurl = "https://zibou.ovh"
 DefaultContentLanguage = "en"
 title = "Hoai Nam NGUYEN"
 theme = "PaperMod"
-pygmentsStyle = "trac"
-pygmentsUseClasses = true
-pygmentsCodeFences = true
-pygmentsCodefencesGuessSyntax = true
-#pygmentsUseClassic = true
-#pygmentOptions = "linenos=inline"
+# pygmentsStyle = "monokai"
+# pygmentsUseClasses = true
+# pygmentsCodeFences = true
+# pygmentsCodefencesGuessSyntax = true
+# pygmentsUseClassic = true
+# pygmentOptions = "linenos=inline"
 #disqusShortname = "XXX"
 #googleAnalytics = "XXX"
 
@@ -28,6 +28,7 @@ socialShare = true
 delayDisqus = true
 showRelatedPosts = true
 ShowToc = true
+
 #  hideAuthor = true
 #  gcse = "012345678901234567890:abcdefghijk" # Get your code from google.com/cse. Make sure to go to "Look and Feel" and change Layout to "Full Width" and Theme to "Classic"
 #  disclaimerText = "The opinions expressed herein are my own personal opinions and do not represent my employer’s view in any way."
