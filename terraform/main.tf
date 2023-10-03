@@ -17,8 +17,3 @@ provider "google" {
   project = var.project_id
   region  = "europe-west9"
 }
-
-
-resource "google_compute_global_address" "zibou" {
-  name = "zibou-ip2"
-}

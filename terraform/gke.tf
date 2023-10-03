@@ -1,4 +1,4 @@
-resource "google_compute_address" "ip_address" {
+resource "google_compute_global_address" "ip_address" {
   name = "zibou-ip2"
 }
 
