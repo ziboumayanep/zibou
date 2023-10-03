@@ -10,11 +10,11 @@ terraform {
     }
   }
 
-  required_version = ">=1.5.7"
+  required_version = ">= 0.14"
 }
 
 provider "google" {
-  project = "zibou-399608"
+  project = var.project_id
   region  = "europe-west9"
 }
 
