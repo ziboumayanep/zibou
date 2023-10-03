@@ -1,3 +1,7 @@
+resource "google_compute_address" "ip_address" {
+  name = "zibou-ip2"
+}
+
 # GKE cluster
 data "google_container_engine_versions" "gke_version" {
   location       = local.location

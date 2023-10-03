@@ -27,7 +27,7 @@ metadata:
     # This enables HTTP connections from Internet clients
     kubernetes.io/ingress.allow-http: "true"
     # This tells Google Cloud to associate the External Load Balancer with the static IP which we created earlier
-    kubernetes.io/ingress.global-static-ip-name: zibou-ip
+    kubernetes.io/ingress.global-static-ip-name: zibou-ip2
     networking.gke.io/v1beta1.FrontendConfig: "zibou-frontend-config"
 spec:
   defaultBackend:
