@@ -28,8 +28,7 @@ resource "google_cloudbuild_trigger" "hugo-build-image" {
   }
   filename        = "blog/hugo-cloudbuild/cloudbuild.yaml"
   included_files  = ["blog/hugo-cloudbuild/**"]
-  service_account = google_service_account.service_account.id
-  logging         = "CLOUD_LOGGING_ONLY"
+  service_account = google_service_account.cloudbuild_service_account.id
 }
 
 resource "google_cloudbuild_trigger" "blog" {
@@ -45,6 +44,5 @@ resource "google_cloudbuild_trigger" "blog" {
   filename       = "blog/cloudbuild.yaml"
   included_files = ["blog/**"]
 
-  service_account = google_service_account.service_account.id
-  logging         = "CLOUD_LOGGING_ONLY"
+  service_account = google_service_account.cloudbuild_service_account.id
 }
