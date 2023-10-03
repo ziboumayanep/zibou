@@ -3,6 +3,14 @@ terraform {
     bucket = "zibou-tf-state"
     prefix = "terraform/state"
   }
+  required_providers {
+    google = {
+      source  = "hashicorp/google"
+      version = "~>5.0.0"
+    }
+  }
+
+  required_version = ">=1.5.7"
 }
 
 provider "google" {

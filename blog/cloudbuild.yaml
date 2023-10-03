@@ -36,7 +36,7 @@ steps:
       - run
       - --filename=.
       - --location=europe-west9
-      - --cluster=zibou-cluster
+      - --cluster=zibou-cluster2
     timeout: 600s
 options:
   automapSubstitutions: true

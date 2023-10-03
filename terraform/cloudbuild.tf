@@ -5,7 +5,7 @@ resource "google_cloudbuildv2_connection" "github-connection" {
   github_config {
     app_installation_id = local.app_installation_id
     authorizer_credential {
-      oauth_token_secret_version = "projects/${local.project_id}/secrets/${local.github_secret_id}/versions/latest"
+      oauth_token_secret_version = "projects/${var.project_id}/secrets/${local.github_secret_id}/versions/latest"
     }
   }
 }
@@ -16,20 +16,20 @@ resource "google_cloudbuildv2_repository" "zibou-repository" {
   remote_uri        = "https://github.com/${local.github_user}/zibou.git"
 }
 
-# resource "google_cloudbuild_trigger" "hugo-build-image" {
-#   location = local.location
-#   name     = "hugo-build-image"
+resource "google_cloudbuild_trigger" "hugo-build-image" {
+  location = local.location
+  name     = "hugo-build-image"
 
-#   repository_event_config {
-#     repository = google_cloudbuildv2_repository.zibou-repository.id
-#     push {
-#       branch = "main"
-#     }
-#   }
-#   filename       = "blog/hugo-cloudbuild/cloudbuild.yaml"
-#   included_files = ["blog/hugo-cloudbuild/**"]
+  repository_event_config {
+    repository = google_cloudbuildv2_repository.zibou-repository.id
+    push {
+      branch = "main"
+    }
+  }
+  filename       = "blog/hugo-cloudbuild/cloudbuild.yaml"
+  included_files = ["blog/hugo-cloudbuild/**"]
 
-# }
+}
 
 resource "google_cloudbuild_trigger" "blog" {
   location = local.location
