@@ -1,0 +1,28 @@
+apiVersion: networking.gke.io/v1beta1
+kind: FrontendConfig
+metadata:
+  name: zibou-frontend-config2
+spec:
+  redirectToHttps:
+    enabled: true
+    responseCodeName: MOVED_PERMANENTLY_DEFAULT
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: zibou2
+  annotations:
+    networking.gke.io/managed-certificates: zibou-cert2
+    # This tells Google Cloud to create an External Load Balancer to realize this Ingress
+    spec.ingressClassName: gce
+    # This enables HTTP connections from Internet clients
+    kubernetes.io/ingress.allow-http: "true"
+    # This tells Google Cloud to associate the External Load Balancer with the static IP which we created earlier
+    kubernetes.io/ingress.global-static-ip-name: zibou-ip2
+    networking.gke.io/v1beta1.FrontendConfig: "zibou-frontend-config2"
+spec:
+  defaultBackend:
+    service:
+      name: blog
+      port:
+        number: 80

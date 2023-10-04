@@ -23,8 +23,8 @@ steps:
     dir: blog/k8s
     script: |
       #!/usr/bin/env bash
-      sed -i 's/<HUGO_BLOG_IMAGE>/europe-west9-docker.pkg.dev\/'${PROJECT_ID}'\/zibou\/blog:'${SHORT_SHA}'/g' blog.yaml
-      cat blog.yaml
+      sed -i 's/<HUGO_BLOG_IMAGE>/europe-west9-docker.pkg.dev\/'${PROJECT_ID}'\/zibou\/blog:'${SHORT_SHA}'/g' deployment.yaml
+      cat deployment.yaml
     env:
       - "PROJECT_ID=$PROJECT_ID"
       - "SHORT_SHA=$SHORT_SHA"

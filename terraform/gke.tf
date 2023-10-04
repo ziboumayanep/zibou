@@ -1,5 +1,6 @@
 resource "google_compute_global_address" "ip_address" {
-  name = "zibou-ip2"
+  name       = "zibou-ip2"
+  ip_version = "IPV4"
 }
 
 # GKE cluster
