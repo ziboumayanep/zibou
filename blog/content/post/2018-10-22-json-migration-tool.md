@@ -12,7 +12,7 @@ The aim of this project is to make the migration script easy to write by people 
 functional programming. Even experienced programmers can stuck with the [Coast to coast design](https://www.playframework.com/documentation/2.6.x/ScalaJsonTransformers)
 
 This comes with a cost because it's not type safe: if the user wants to update a field which is a string but it's an object
-in realty, then an `Exception` is throw. Remember, exception can be throwed anywhere inside the migration script.
+in reality, then an `Exception` is throw. Remember, exception can be throwed anywhere inside the migration script.
 
 In a real world project, the users should backup their databases before applying any migrations
 
@@ -249,7 +249,3 @@ val l = List(
 
 If your json lives inside a database, then you have to store the version somewhere. To build a global transformer you have to know the start version and create
 the global transformation from the start version to the lastest version.
-
-That's it
-
-If you've found it useful, please let me know
