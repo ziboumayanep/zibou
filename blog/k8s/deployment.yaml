@@ -1,12 +1,3 @@
-# apiVersion: networking.gke.io/v1beta1
-# kind: FrontendConfig
-# metadata:
-#   name: zibou-frontend-config
-# spec:
-#   redirectToHttps:
-#     # enabled: true
-#     responseCodeName: MOVED_PERMANENTLY_DEFAULT
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:

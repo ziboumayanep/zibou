@@ -1,6 +1,6 @@
 
 locals {
-  cloudbuild_permissions = toset([
+  cloudbuild_permissions = var.cloudbuild ? toset([]) : ([
     "roles/container.developer",
     "roles/iam.serviceAccountUser",
     "roles/logging.logWriter",
@@ -10,6 +10,7 @@ locals {
   ])
 }
 resource "google_service_account" "cloudbuild_service_account" {
+  count        = var.cloudbuild ? 0 : 1
   account_id   = "cloudbuild-sa"
   display_name = "Cloudbuild Service Account"
 }
@@ -18,6 +19,6 @@ resource "google_service_account" "cloudbuild_service_account" {
 resource "google_project_iam_member" "cloudbuild" {
   for_each = local.cloudbuild_permissions
   project  = var.project_id
-  role     = each.key
-  member   = "serviceAccount:${google_service_account.cloudbuild_service_account.email}"
+  role     = each.value
+  member   = "serviceAccount:${google_service_account.cloudbuild_service_account[0].email}"
 }

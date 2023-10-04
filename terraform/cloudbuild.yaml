@@ -1,0 +1,16 @@
+steps:
+  - id: "tf plan"
+    name: "hashicorp/terraform:1.5.7"
+    entrypoint: "sh"
+    dir: terraform
+    args:
+      - "-c"
+      - |
+        terraform init
+        terraform plan
+    env:
+      - "TF_VAR_project_id=$PROJECT_ID"
+      - "TF_VAR_cloudbuild=true"
+
+options:
+  defaultLogsBucketBehavior: REGIONAL_USER_OWNED_BUCKET

@@ -16,6 +16,22 @@ resource "google_cloudbuildv2_repository" "zibou-repository" {
   remote_uri        = "https://github.com/${local.github_user}/zibou.git"
 }
 
+// create the cloudbuild trigger to execute this file
+resource "google_cloudbuild_trigger" "iac" {
+  location = local.location
+  name     = "iac"
+
+  repository_event_config {
+    repository = google_cloudbuildv2_repository.zibou-repository.id
+    push {
+      branch = "main"
+    }
+  }
+  filename        = "terraform/cloudbuild.yaml"
+  included_files  = ["terraform/**"]
+  service_account = google_service_account.cloudbuild_service_account[0].id
+}
+
 resource "google_cloudbuild_trigger" "hugo-build-image" {
   location = local.location
   name     = "hugo-build-image"
@@ -28,7 +44,7 @@ resource "google_cloudbuild_trigger" "hugo-build-image" {
   }
   filename        = "blog/hugo-cloudbuild/cloudbuild.yaml"
   included_files  = ["blog/hugo-cloudbuild/**"]
-  service_account = google_service_account.cloudbuild_service_account.id
+  service_account = google_service_account.cloudbuild_service_account[0].id
 }
 
 resource "google_cloudbuild_trigger" "blog" {
@@ -44,5 +60,5 @@ resource "google_cloudbuild_trigger" "blog" {
   filename       = "blog/cloudbuild.yaml"
   included_files = ["blog/**"]
 
-  service_account = google_service_account.cloudbuild_service_account.id
+  service_account = google_service_account.cloudbuild_service_account[0].id
 }
