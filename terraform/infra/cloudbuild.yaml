@@ -2,7 +2,7 @@ steps:
   - id: "tf plan"
     name: "hashicorp/terraform:1.5.7"
     entrypoint: "sh"
-    dir: terraform
+    dir: terraform/infra
     args:
       - "-c"
       - |
