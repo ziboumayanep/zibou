@@ -7,7 +7,7 @@ steps:
       - "-c"
       - |
         terraform init
-        terraform plan
+        terraform apply -auto-approve
     env:
       - "TF_VAR_project_id=$PROJECT_ID"
       - "TF_VAR_cloudbuild=true"

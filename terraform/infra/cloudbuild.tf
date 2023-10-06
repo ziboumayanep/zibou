@@ -4,7 +4,7 @@ resource "google_cloudbuild_trigger" "hugo-build-image" {
   name     = "hugo-build-image"
 
   repository_event_config {
-    repository = google_cloudbuildv2_repository.zibou-repository.id
+    repository = data.terraform_remote_state.infra0.outputs.repository_id
     push {
       branch = "main"
     }
@@ -19,7 +19,7 @@ resource "google_cloudbuild_trigger" "blog" {
   name     = "blog"
 
   repository_event_config {
-    repository = google_cloudbuildv2_repository.zibou-repository.id
+    repository = data.terraform_remote_state.infra0.outputs.repository_id
     push {
       branch = "main"
     }

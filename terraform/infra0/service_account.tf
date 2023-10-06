@@ -6,7 +6,9 @@ locals {
     "roles/logging.logWriter",
     "roles/storage.admin",
     "roles/artifactregistry.reader",
-    "roles/artifactregistry.writer"
+    "roles/artifactregistry.writer",
+    "roles/compute.instanceAdmin",
+    "roles/cloudbuild.builds.editor"
   ])
 }
 

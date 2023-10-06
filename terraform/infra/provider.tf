@@ -3,6 +3,7 @@ terraform {
     bucket = "zibou-tf-state"
     prefix = "terraform/state"
   }
+
   required_providers {
     google = {
       source  = "hashicorp/google"
