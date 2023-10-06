@@ -24,7 +24,7 @@ steps:
     script: |
       #!/usr/bin/env bash
       sed -i 's/<HUGO_BLOG_IMAGE>/europe-west9-docker.pkg.dev\/'${PROJECT_ID}'\/zibou\/blog:'${SHORT_SHA}'/g' deployment.yaml
-      cat deploymentkk.yaml
+      cat deployment.yaml
     env:
       - "PROJECT_ID=$PROJECT_ID"
       - "SHORT_SHA=$SHORT_SHA"
@@ -36,7 +36,7 @@ steps:
       - run
       - --filename=.
       - --location=${LOCATION}
-      - --cluster=zibou-cluster2
+      - --cluster=zibou-cluster
     timeout: 600s
 options:
   automapSubstitutions: true

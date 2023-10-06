@@ -1,7 +1,7 @@
 apiVersion: networking.gke.io/v1
 kind: ManagedCertificate
 metadata:
-  name: zibou-cert2
+  name: zibou-cert
 spec:
   domains:
     - zibou.ovh

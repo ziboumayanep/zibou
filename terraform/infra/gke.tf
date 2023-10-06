@@ -1,5 +1,5 @@
 resource "google_compute_global_address" "ip_address" {
-  name       = "zibou-ip2"
+  name       = "zibou-ip"
   ip_version = "IPV4"
 }
 
@@ -10,8 +10,9 @@ data "google_container_engine_versions" "gke_version" {
 }
 
 resource "google_container_cluster" "primary" {
-  name             = "zibou-cluster2"
-  location         = local.location
-  enable_autopilot = true
+  name                = "zibou-cluster"
+  location            = local.location
+  enable_autopilot    = true
+  deletion_protection = false
 }
 
