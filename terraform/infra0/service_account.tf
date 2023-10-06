@@ -8,7 +8,9 @@ locals {
     "roles/artifactregistry.reader",
     "roles/artifactregistry.writer",
     "roles/compute.instanceAdmin",
-    "roles/cloudbuild.builds.editor"
+    "roles/cloudbuild.builds.editor",
+    "roles/container.clusterAdmin", # create gke cluster
+    "roles/compute.networkAdmin"    # create global ip address
   ])
 }
 

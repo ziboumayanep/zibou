@@ -5,7 +5,7 @@ data "google_service_account" "service_account" {
 data "terraform_remote_state" "infra0" {
   backend = "gcs"
   config = {
-    bucket = "zibou-tf-state"
+    bucket = "ziboumima-tf-state"
     prefix = "terraform/state0"
   }
 }

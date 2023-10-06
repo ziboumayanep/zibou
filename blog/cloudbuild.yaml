@@ -1,6 +1,7 @@
 steps:
-  - name: europe-west9-docker.pkg.dev/${PROJECT_ID}/zibou/hugo:31107fd
+  - name: klakegg/hugo
     dir: blog
+    # entrypoint: hugo
 
   - name: gcr.io/cloud-builders/docker
     args:
