@@ -7,7 +7,7 @@ steps:
     args:
       [
         build,
-        "--tag=europe-west9-docker.pkg.dev/${PROJECT_ID}/zibou/blog:${SHORT_SHA}",
+        "--tag=${LOCATION}-docker.pkg.dev/${PROJECT_ID}/zibou/blog:${SHORT_SHA}",
         .,
       ]
     dir: blog
@@ -16,7 +16,7 @@ steps:
     args:
       [
         "push",
-        "europe-west9-docker.pkg.dev/${PROJECT_ID}/zibou/blog:${SHORT_SHA}",
+        "${LOCATION}-docker.pkg.dev/${PROJECT_ID}/zibou/blog:${SHORT_SHA}",
       ]
     allowFailure: true
 
@@ -24,10 +24,12 @@ steps:
     dir: blog/k8s
     script: |
       #!/usr/bin/env bash
-      sed -i 's/<HUGO_BLOG_IMAGE>/europe-west9-docker.pkg.dev\/'${PROJECT_ID}'\/zibou\/blog:'${SHORT_SHA}'/g' deployment.yaml
+      sed -i 's/<HUGO_BLOG_IMAGE>/'${LOCATION}'-docker.pkg.dev\/'${PROJECT_ID}'\/zibou\/blog:'${SHORT_SHA}'/g' deployment.yaml
       cat deployment.yaml
+
     env:
       - "PROJECT_ID=$PROJECT_ID"
+      - "LOCATION=$LOCATION"
       - "SHORT_SHA=$SHORT_SHA"
 
   # deploy GKE.

@@ -3,7 +3,8 @@ locals {
     "cloudbuild",
     "secretmanager",
     "iam",
-    "container" # gke
+    "container", # gke
+    "artifactregistry"
   ])
 }
 resource "google_project_service" "project" {

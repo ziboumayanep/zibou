@@ -5,12 +5,13 @@ locals {
     "roles/iam.serviceAccountUser",
     "roles/logging.logWriter",
     "roles/storage.admin",
-    "roles/artifactregistry.reader",
-    "roles/artifactregistry.writer",
+    # "roles/artifactregistry.reader",
+    # "roles/artifactregistry.writer",
     "roles/compute.instanceAdmin",
     "roles/cloudbuild.builds.editor",
     "roles/container.clusterAdmin", # create gke cluster
-    "roles/compute.networkAdmin"    # create global ip address
+    "roles/compute.networkAdmin",   # create global ip address
+    "roles/artifactregistry.admin"  # create artifact registry
   ])
 }
 

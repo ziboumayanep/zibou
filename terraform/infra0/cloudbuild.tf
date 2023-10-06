@@ -58,5 +58,6 @@ resource "google_cloudbuild_trigger" "iac" {
   }
   filename        = "terraform/infra/cloudbuild.yaml"
   included_files  = ["terraform/infra/**"]
+  ignored_files   = ["blog/**"]
   service_account = google_service_account.cloudbuild_service_account.id
 }
