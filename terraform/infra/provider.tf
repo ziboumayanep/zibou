@@ -1,6 +1,6 @@
 terraform {
   backend "gcs" {
-    bucket = "zibou-tf-state"
+    bucket = "ziboumima-tf-state"
     prefix = "terraform/state"
   }
 
