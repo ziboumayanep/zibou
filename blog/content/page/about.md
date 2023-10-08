@@ -5,5 +5,3 @@ comments: false
 ---
 
 I am a programmer living in the Paris area. I am currently interested in (big) data projects, functional programming, clean code, software testing, algorithms, devops and automations.
-
-I hope you enjoy this blog.
