@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blog-deployment
+  namespace: test
+spec:
+  selector:
+    matchLabels:
+      app: blog
+  replicas: 1 # tells deployment to run 1 pods matching the template
+  template:
+    metadata:
+      labels:
+        app: blog
+    spec:
+      containers:
+        - name: blog
+          image: namnguyen107/blog
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80

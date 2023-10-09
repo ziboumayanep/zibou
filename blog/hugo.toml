@@ -1,4 +1,5 @@
-baseurl = "https://zibou.ovh"
+# baseurl = "https://zibou.ovh"
+baseurl = "/"
 DefaultContentLanguage = "en"
 title = "Hoai Nam NGUYEN"
 theme = "PaperMod"
@@ -50,7 +51,7 @@ noClasses = false
 [Author]
 # Set only your "username" for default hosts and full URLs otherwise (e.g., "https://MyGitLab.org/username")
 name = "Hoai Nam NGUYEN"
-website = "https://zibou.ovh"
+# website = "https://zibou.ovh"
 email = "hoainam.nguyen@gmail.com"
 github = "ziboumayanep"
 linkedin = "https://www.linkedin.com/in/hoai-nam-nguyen/"
