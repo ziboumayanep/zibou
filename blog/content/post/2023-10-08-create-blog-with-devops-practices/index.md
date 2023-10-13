@@ -25,7 +25,7 @@ While these requirements already posed a significant challenge, I decided to for
 
 # Hugo and container
 
-[Hugo](https://gohugo.io/) stands out as an exceptionally fast static website generator framework written in Go, allowing me to effortlessly transform markdown content into a visually stunning blog with code formatted. 
+[Hugo](https://gohugo.io/) is a fast static website generator framework written in Go, allowing me to effortlessly transform markdown content into a visually stunning blog with code formatted. 
 
 To summarize the process of building a static website using Go and Hugo:
 
@@ -193,5 +193,53 @@ And we must provide a certificate accepted by the browser in order to establish 
 
 This is a very informative [video](https://www.youtube.com/watch?v=j9QmMEWmcfo) that explains how the HTTPS protocol works and the role of the certificate. But what is not said in this video is how to obtain the certificate and how the authority knows that I am the owner of the domain and I have the private key. This is a document from [Let's encrypt](https://letsencrypt.org/how-it-works/) that explains well how `letsencrypt` achieve this task.
 
+I did try Let's Encrpyt first and encountered some difficulties, then found out that Google provides a [managed certificate](https://cloud.google.com/kubernetes-engine/docs/how-to/managed-certs) and here's the exact definition of the certificate I've used:
 
+```
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: zibou-cert
+spec:
+  domains:
+    - zibou.ovh
+```
+
+
+And this is the definition of the `Ingress` component
+
+```
+apiVersion: networking.gke.io/v1beta1
+kind: FrontendConfig
+metadata:
+  name: zibou-frontend-config
+spec:
+  redirectToHttps:
+    enabled: true
+    responseCodeName: MOVED_PERMANENTLY_DEFAULT
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: zibou
+  annotations:
+    networking.gke.io/managed-certificates: zibou-cert
+    # This tells Google Cloud to create an External Load Balancer to realize this Ingress
+    spec.ingressClassName: gce
+    # This enables HTTP connections from Internet clients
+    kubernetes.io/ingress.allow-http: "true"
+    # This tells Google Cloud to associate the External Load Balancer with the static IP which we created earlier
+    kubernetes.io/ingress.global-static-ip-name: zibou-ip
+    networking.gke.io/v1beta1.FrontendConfig: "zibou-frontend-config"
+spec:
+  defaultBackend:
+    service:
+      name: blog
+      port:
+        number: 80
+```
+
+* The annotation `networking.gke.io/managed-certificates` points to the name of the certificate defined above (`zibou-cert`)
+* The annotation `kubernetes.io/ingress.global-static-ip-name` points to the name of the stable address ip created above (`zibou-ip`)
+* The backend is where the traffic will be routed to, is defined by tag `name` with value `blog` and will use the port 80 of this backend.
 
