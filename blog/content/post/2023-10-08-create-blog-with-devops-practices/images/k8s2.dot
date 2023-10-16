@@ -1,0 +1,22 @@
+
+digraph G {
+    rankdir=LR
+    compound=true;
+    subgraph cluster_k8s {
+        label="k8s" 
+        LoadBalancer
+        subgraph cluster_deployment {
+            label="Deployment\n:80";
+            subgraph cluster_replicat_set {
+                label="ReplicaSet"
+                subgraph cluster_pod {
+                    label="Pod\n:80"
+                    container;
+                }
+            }
+        }
+    }
+    "zibou.ovh" -> 
+    "34.36.146.248"  -> LoadBalancer
+    LoadBalancer -> container;
+}

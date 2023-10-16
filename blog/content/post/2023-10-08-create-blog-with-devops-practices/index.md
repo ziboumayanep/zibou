@@ -1,5 +1,5 @@
 ---
-title: "Redeploy my blog using K8s and DevOps practices"
+title: "Redeploy my blog using K8s and DevOps practices [in progress...]"
 date: 2023-10-08
 tags:
   - DevOps
@@ -243,3 +243,25 @@ spec:
 * The annotation `kubernetes.io/ingress.global-static-ip-name` points to the name of the stable address ip created above (`zibou-ip`)
 * The backend is where the traffic will be routed to, is defined by tag `name` with value `blog` and will use the port 80 of this backend.
 
+The Ingress controller will create a managed Load Balancer and route the traffic from the stable address IP to the `Pod` inside the Cluster.
+
+Now it does not work yet, we must map the DNS record to the stable IP address. First get the value of the address by this command:
+
+```
+$ gcloud compute addresses list
+NAME: zibou-ip
+ADDRESS/RANGE: 34.36.146.248
+TYPE: EXTERNAL
+PURPOSE:
+NETWORK:
+REGION:
+SUBNET:
+STATUS: IN_USE
+```
+The last step is to create/edit the record with the good IP address
+![ovh](images/ovh.PNG)
+
+The mapping process takes several hours. The process of signing the certificate takes place at the same time, because when the certificate is created,
+GCP continously request the domain name `zibou.ovh` to verify that there is a routing between the domain name and the address IP.
+
+Now I am so satisfy that the most important part of this project is over. But it's still far from finished.
