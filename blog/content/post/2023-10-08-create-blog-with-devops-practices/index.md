@@ -22,6 +22,8 @@ In addition to the technical aspects, I also integrated DevOps best practices in
 
 While these requirements already posed a significant challenge, I decided to forgo the complexity of multi-environment deployment, focusing on the initial development stages of the project. 
 
+Here's the [link](https://github.com/ziboumima/zibou) the this repository:
+
 
 # Hugo and container
 
@@ -264,4 +266,42 @@ The last step is to create/edit the record with the good IP address
 The mapping process takes several hours. The process of signing the certificate takes place at the same time, because when the certificate is created,
 GCP continously request the domain name `zibou.ovh` to verify that there is a routing between the domain name and the address IP.
 
-Now I am so satisfy that the most important part of this project is over. But it's still far from finished.
+Now I can access to my blog via the address `zibou.ovh` and I am so satisfy that the most important part of this project is over. But it's still far from finished.
+
+# CI/CD with CloudBuild
+Now that I have my blog packaged by docker, running inside GKE cluster with a load balancer that is connected to my DNS. Everything works fine.
+But if I modify my blog, I have to rebuild my docker image in my local machine, push the image to DockerHub, then apply the change to the cluster with `kubectl`. This is a lot of work. 
+That's why I want to automate all the work with CloudBuild. Anytime I push a change to the `main` branch, I want the pipeline to update the website automatically.
+For this stage, I've chosen to first make it works, then trying to automate the CI/CD creation with Terraform later.
+
+## GitHub connection
+If CloudBuild executes a pipeline each time I make a push to the main branch of the repository in GitHub, then somehow there is much be a connection between the two components.
+This [doc](https://cloud.google.com/build/docs/automating-builds/github/connect-repo-github?generation=2nd-gen) shows how to create this connection.
+
+There are two steps:
+* *Create the GitHub connection.* There is two ways to create the connection: manually or programmatically. I've chosen the programatically way because I want to automate this step later with terraform.
+* *Create the build repository* The GitHub connection is the link between CloudBuild and my personal account. This step will create the configuration for my specific repository, in this case the repository named `zibou`
+
+Let's check the status of these components
+
+Firstly, the connection
+
+```
+$ gcloud builds connections list --region europe-west1
+NAME: github-connection
+INSTALLATION_STATE: COMPLETE
+DISABLED: Enabled
+```
+
+And secondly, the repository
+
+```
+gcloud builds repositories list --connection github-connection --region europe-west1
+NAME: zibou
+REMOTE_URI: https://github.com/ziboumima/zibou.git
+```
+
+## CloudBuild definition
+Now the connection with the GitHub repository is established, let's define the CloudBuild file.
+You can choose any folder to create the cloudbuild file, but it's generally created at the root of the project it builds, in this case, the `blog` folder.
+ 

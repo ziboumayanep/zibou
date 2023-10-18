@@ -27,11 +27,6 @@ steps:
       sed -i 's/<HUGO_BLOG_IMAGE>/'${LOCATION}'-docker.pkg.dev\/'${PROJECT_ID}'\/zibou\/blog:'${SHORT_SHA}'/g' deployment.yaml
       cat deployment.yaml
 
-    env:
-      - "PROJECT_ID=$PROJECT_ID"
-      - "LOCATION=$LOCATION"
-      - "SHORT_SHA=$SHORT_SHA"
-
   # deploy GKE.
   - name: "gcr.io/cloud-builders/gke-deploy"
     dir: blog/k8s
