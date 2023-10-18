@@ -1,8 +1,4 @@
 steps:
-  - name: klakegg/hugo
-    dir: blog
-    # entrypoint: hugo
-
   - name: gcr.io/cloud-builders/docker
     args:
       [
@@ -25,7 +21,6 @@ steps:
     script: |
       #!/usr/bin/env bash
       sed -i 's/<HUGO_BLOG_IMAGE>/'${LOCATION}'-docker.pkg.dev\/'${PROJECT_ID}'\/zibou\/blog:'${SHORT_SHA}'/g' deployment.yaml
-      cat deployment.yaml
 
   # deploy GKE.
   - name: "gcr.io/cloud-builders/gke-deploy"

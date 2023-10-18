@@ -5,8 +5,6 @@ locals {
     "roles/iam.serviceAccountUser",
     "roles/logging.logWriter",
     "roles/storage.admin",
-    # "roles/artifactregistry.reader",
-    # "roles/artifactregistry.writer",
     "roles/compute.instanceAdmin",
     "roles/cloudbuild.builds.editor",
     "roles/container.clusterAdmin", # create gke cluster

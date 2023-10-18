@@ -5,6 +5,7 @@ tags:
   - DevOps
   - GCP
   - Hugo
+comments: true
 ---
 
 Four years have passed since my last blog post, and during that time, my interests in technology have evolved, steering me towards DevOps and automation practices. With newfound free time, I decided to embark on a side project that would allow me to apply my recent knowledge in the field of DevOps. This led me to a compelling idea: why not treat my blog as a service and leverage DevOps practices to deploy it on Google Cloud Platform (GCP)?
@@ -268,19 +269,19 @@ GCP continously request the domain name `zibou.ovh` to verify that there is a ro
 
 Now I can access to my blog via the address `zibou.ovh` and I am so satisfy that the most important part of this project is over. But it's still far from finished.
 
-# CI/CD with CloudBuild
+# CI/CD with Cloud Build
 Now that I have my blog packaged by docker, running inside GKE cluster with a load balancer that is connected to my DNS. Everything works fine.
 But if I modify my blog, I have to rebuild my docker image in my local machine, push the image to DockerHub, then apply the change to the cluster with `kubectl`. This is a lot of work. 
-That's why I want to automate all the work with CloudBuild. Anytime I push a change to the `main` branch, I want the pipeline to update the website automatically.
+That's why I want to automate all the work with Cloud Build. Anytime I push a change to the `main` branch, I want the pipeline to update the website automatically.
 For this stage, I've chosen to first make it works, then trying to automate the CI/CD creation with Terraform later.
 
 ## GitHub connection
-If CloudBuild executes a pipeline each time I make a push to the main branch of the repository in GitHub, then somehow there is much be a connection between the two components.
+If Cloud Build executes a pipeline each time I make a push to the main branch of the repository in GitHub, then somehow there must be a connection between the two components.
 This [doc](https://cloud.google.com/build/docs/automating-builds/github/connect-repo-github?generation=2nd-gen) shows how to create this connection.
 
 There are two steps:
 * *Create the GitHub connection.* There is two ways to create the connection: manually or programmatically. I've chosen the programatically way because I want to automate this step later with terraform.
-* *Create the build repository* The GitHub connection is the link between CloudBuild and my personal account. This step will create the configuration for my specific repository, in this case the repository named `zibou`
+* *Create the build repository* The GitHub connection is the link between Cloud Build and my personal account. This step will create the configuration for my specific repository, in this case the repository named `zibou`
 
 Let's check the status of these components
 
@@ -300,8 +301,149 @@ gcloud builds repositories list --connection github-connection --region europe-w
 NAME: zibou
 REMOTE_URI: https://github.com/ziboumima/zibou.git
 ```
+## Docker repository creation
+The purpose of the CI/CD pipeline is to build an image, push the image to a repository, and then retrieve the same image in the k8s cluster for deployment.
+In the previous step, I've pushed the image in DockerHub, but it's better for a private project to control the repository.
+I've created the repository in the same region with the command `gcloud artifacts repositories create...`
+And I can verity the created repository with the command `gcloud artifacts repositories list`
+```
+ARTIFACT_REGISTRY
 
-## CloudBuild definition
-Now the connection with the GitHub repository is established, let's define the CloudBuild file.
-You can choose any folder to create the cloudbuild file, but it's generally created at the root of the project it builds, in this case, the `blog` folder.
- 
+REPOSITORY: zibou
+FORMAT: DOCKER
+MODE: STANDARD_REPOSITORY
+DESCRIPTION: zibou repository
+LOCATION: europe-west1
+LABELS:
+ENCRYPTION: Google-managed key
+CREATE_TIME: 2023-10-06T22:44:25
+UPDATE_TIME: 2023-10-19T18:12:18
+SIZE (MB): 20.674
+```
+The step will be automated later with terraform.
+
+## Cloud Build definition
+Now the connection with the GitHub repository is established, and the private repository is created, let's define the Cloud Build file.
+You can choose any folder to create the Cloud Build file, but it's generally created at the root of the project it builds, in this case, the `blog` folder.
+Click [here](https://cloud.google.com/build/docs/build-config-file-schema) to understand the whole Cloud Build syntax. I will explain only what is used to build to website.
+
+The `Cloud Build.yaml` file has this form:
+
+```
+steps:
+  - name: <image_name>
+    ...
+
+options:
+  automapSubstitutions: true
+  defaultLogsBucketBehavior: REGIONAL_USER_OWNED_BUCKET
+```
+Where I define a list of step to build and push the docker image to the repository.
+I defined 2 options:
+* *automapSubstitutions: true* means that every variables will be mapped to the environnement variable when running each step.
+For example, if I want to run a bash script inside a step, and If I don't define this option as true, then I have to manually map the environnement variable for this step by defining the attribute `env`. For example:
+```
+- name: 'ubuntu'
+  args: ['bash', './myscript.sh']
+  env:
+  - 'BUILD=$BUILD_ID'
+  - 'PROJECT_ID=$PROJECT_ID'
+  - 'PROJECT_NUMBER=$PROJECT_NUMBER'
+  - 'REV=$REVISION_ID'
+
+```
+* *defaultLogsBucketBehavior: REGIONAL_USER_OWNED_BUCKET* by default the Cloud Build pipepline is executed by a default Cloud Build service account created for each project. The log of the build is written to a Google managed cloud storage bucket, which the default service account has access. When I execute the Cloud Build with my defined service account, I have this error:
+```
+Your build failed to run: generic::invalid_argument: if 'build.service_account' is specified, the build must either (a) specify 'build.logs_bucket', (b) use the REGIONAL_USER_OWNED_BUCKET build.options.default_logs_bucket_behavior option, or (c) use either CLOUD_LOGGING_ONLY / NONE logging options
+```
+The error message tells me about the options availables and I've chosen the REGIONAL_USER_OWNED_BUCKET option, which means the cloud build will write the bucket owned by the service account.
+
+Now let's dive into the first step of the build
+
+```
+- name: gcr.io/cloud-builders/docker
+  args:
+    [
+      build,
+      "--tag=${LOCATION}-docker.pkg.dev/${PROJECT_ID}/zibou/blog:${SHORT_SHA}",
+      .,
+    ]
+  dir: blog
+```
+In this step, the pre-built image `gcr.io/cloud-builders/docker` is used, the default entrypoint is launched with args `build --tag=...` where `LOCATION`, `PROJECT_ID` and `SHORT_SHA` are values provided by Cloud Build. I want to build the image with the `SHORT_SHA` value instead of `latest` to achieve reproducible build.
+The `dir` attribute is set to `blog` because that's where the Dockerfile is located.
+
+The next step is to push the image to the private repository:
+
+```
+- name: "gcr.io/cloud-builders/docker"
+  args:
+    [
+      "push",
+      "${LOCATION}-docker.pkg.dev/${PROJECT_ID}/zibou/blog:${SHORT_SHA}",
+    ]
+  allowFailure: true
+```
+
+The third step is a preparation step. It replaces the value `<HUGO_BLOG_IMAGE>` by the image location (with `SHORT_SHA` as tag) created in previous step.
+
+```
+- name: "bash"
+  dir: blog/k8s
+  script: |
+    #!/usr/bin/env bash
+    sed -i 's/<HUGO_BLOG_IMAGE>/'${LOCATION}'-docker.pkg.dev\/'${PROJECT_ID}'\/zibou\/blog:'${SHORT_SHA}'/g' deployment.yaml
+```
+And as expected, the last step is the deployment of the k8s cluster:
+
+```
+- name: "gcr.io/cloud-builders/gke-deploy"
+  dir: blog/k8s
+  args:
+    - run
+    - --filename=.
+    - --location=${LOCATION}
+    - --cluster=zibou-cluster
+  timeout: 600s
+```
+
+## Trigger
+
+Before creating the trigger, I want to create a service account to run the trigger instead of using the service account by default.
+
+```gcloud iam service-accounts create cloudbuild-sa```
+
+Now I create manually for now the trigger that executes the pipeline with the GCP console.
+The details of the trigger:
+
+* name: blog
+* region: europe-west1
+* event: Push to a branch
+* source: repository `zibou`, branch `main`
+* included files: blog/** (the trigger is activated only when at least one file in the folder blog changed)
+* configuration type: cloudbuild configuration
+* location: repository
+* cloudbuild configuration file location: `blog/cloudbuild.yaml`
+* service account email: cloudbuild-sa@ziboumima.iam.gserviceaccount.com
+
+Now I can run manually the trigger to test and found the first error:
+
+```
+Failed to trigger build: invalid bucket "273881801292-europe-west1-cloudbuild-logs"; builder service account does not have access to the bucket
+```
+
+Then I discovered a lot of role I need to give the service account in order to run the trigger. For example, the service account needs the role `logging.logWriter` and `storage.admin` to write logs,
+`container.developer` to push the image to the repository... Here's is the whole list:
+
+```
+    "roles/container.developer",
+    "roles/iam.serviceAccountUser",
+    "roles/logging.logWriter",
+    "roles/storage.admin",
+    "roles/compute.instanceAdmin",
+    "roles/cloudbuild.builds.editor",
+```
+I have to note these details down in order to automate later with terrform.
+Now the run is sucessful. I try to modify some blog entries and found that the trigger run succesfully and the blog is updated.
+
+Is my project is over yet ? No
