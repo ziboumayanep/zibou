@@ -409,6 +409,8 @@ And as expected, the last step is the deployment of the k8s cluster:
 
 ## Trigger
 
+Trigger, as the name suggests, is the component that receives an event and execute the pipeline when some conditions are met. We need to create the trigger to respond to the event of pushing a new commit to the branch `main` but only when files in the folder `blog` are changed.
+
 Before creating the trigger, I want to create a service account to run the trigger instead of using the service account by default.
 
 ```gcloud iam service-accounts create cloudbuild-sa```
@@ -432,7 +434,7 @@ Now I can run manually the trigger to test and found the first error:
 Failed to trigger build: invalid bucket "273881801292-europe-west1-cloudbuild-logs"; builder service account does not have access to the bucket
 ```
 
-Then I discovered a lot of role I need to give the service account in order to run the trigger. For example, the service account needs the role `logging.logWriter` and `storage.admin` to write logs,
+Then I discovered a lot of roles I need to give the service account in order to run the trigger. For example, the service account needs the role `logging.logWriter` and `storage.admin` to write logs,
 `container.developer` to push the image to the repository... Here's is the whole list:
 
 ```
@@ -441,9 +443,14 @@ Then I discovered a lot of role I need to give the service account in order to r
     "roles/logging.logWriter",
     "roles/storage.admin",
     "roles/compute.instanceAdmin",
-    "roles/cloudbuild.builds.editor",
 ```
 I have to note these details down in order to automate later with terrform.
 Now the run is sucessful. I try to modify some blog entries and found that the trigger run succesfully and the blog is updated.
 
-Is my project is over yet ? No
+# Platform as code
+Now It's time to automate the creation of the whole project. Here's the components we've created so far:
+
+* The GKE clusters (with all the K8s components)
+  * The 
+
+Working in progress..
